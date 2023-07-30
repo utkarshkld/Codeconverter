@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link rel="stylesheet" href="codemirror-5.65.13/lib/codemirror.css">
+  <link rel="stylesheet" href="codemirror-5.65.13/theme/dracula.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+  crossorigin="anonymous"></script>
+<script src="codemirror-5.65.13/lib/codemirror.js"></script>
+<script src="codemirror-5.65.13/mode/clike/clike.js"></script>
+<script src="codemirror-5.65.13/mode/python/python.js"></script>
+<script src="codemirror-5.65.13/addon/edit/closebrackets.js"></script>
+<script src="codemirror-5.65.13/addon/edit/matchbrackets.js"></script>
+<style>
+    /* .loader {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+    } */
+    
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    </style>
+    
+  
+</head>
+
+<body class="bg-secondary">
+
+  <div class="container mt-3 d-flex">
+    <div class="row w-50 m-2"> 
+      <div class="col rounded">
+        <div class="d-flex justify-content-between mb-2 bg-dark rounded p-2">
+          <div class="col-12 w-25">
+            <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+            <select class="form-select" id="inlineFormSelectPref">
+              <option selected>Choose...</option>
+              <option value="Java">Java</option>
+              <option value="Cpp">Cpp</option>
+              <option value="Python">Python</option>
+            </select>
+          </div>
+          <div>
+            <button type="button" id="run" class="btn btn-success"><i class="bi bi-play-fill"></i></button>
+          </div>
+        </div>
+        <textarea type="text" id="editor" class="form-control w-100" aria-label="Code Editor"></textarea>
+        <div class="col d-flex h-50  flex-column rounded">
+            <div class="h-50">
+                <label for="Input" class="text-light mt-4 mb-2" >Input</label>
+                <textarea type="text" id="input" class="form-control h-75 bg-dark-subtle"  aria-label="Last name"></textarea>
+                <label for="Output" class="text-light mt-4 mb-2">Output</label>
+                <textarea type="text" id="output" class="form-control h-75 bg-dark-subtle"  aria-label="Last name"></textarea>
+            </div>
+    </div>
+        
+    </div>
+    </div>
+    <div class="row w-50 m-2"> 
+        <div class="col rounded">
+            <div class="d-flex justify-content-between mb-2 bg-dark rounded p-2">
+                <div class="col-12 w-25">
+                  <label class="visually-hidden" for="inlineFormSelectPref2">Preference</label>
+                  <select class="form-select" id="inlineFormSelectPref2">
+                    <option selected>Choose...</option>
+                    <option value="Java">Java</option>
+                    <option value="Cpp">Cpp</option>
+                    <option value="Python">Python</option>
+                  </select>
+                </div>
+                <div>
+                  <button type="button" id="run2" class="btn btn-success"><i class="bi bi-play-fill"></i></button>
+                  <button type="button" id="generatecode">Generate Code</button>
+                  <button type="button" id="commentcode">Comment code</button>
+                </div>
+              </div>
+          <textarea type="text" id="editor2" class="form-control w-100" aria-label="Code Editor"></textarea>
+          <div class="col d-flex h-50  flex-column rounded">
+              <div class="h-50">
+                  <label for="Input2" class="text-light mt-4 mb-2" >Input2</label>
+                  <textarea type="text" id="input2" class="form-control h-75 bg-dark-subtle"  aria-label="Last name"></textarea>
+                  <label for="Output2" class="text-light mt-4 mb-2">Output2</label>
+                  <textarea type="text" id="output2" class="form-control h-75 bg-dark-subtle"  aria-label="Last name"></textarea>
+              </div>
+      </div>
+          
+      </div>
+      </div>
+  </div> 
+  
+
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("editor"),{
+        mode:"text/x-c++src",
+        theme: "dracula",
+        lineNumbers:true,
+        autoCloseBrackets: true,
+        matchBrackets: true
+    })
+    var width=window.innerWidth
+    var input = document.getElementById("input")
+    var output = document.getElementById("output")
+    var run = document.getElementById("run")
+    editor.setSize(0.4*innerWidth,"500")
+    // document.getElementById("loader").style.display = "block";
+    
+    var option = document.getElementById("inlineFormSelectPref")
+    option.addEventListener("change",function(){
+    
+        if(option.value=="Java"){
+            editor.setOption("mode","text/x-java")
+        }
+        else if(option.value=="Python"){
+            editor.setOption("mode","text/x-python")
+        }
+        else{
+            editor.setOption("mode","text/x-c++src")
+        }
+    })
+    var code;
+    run.addEventListener("click",async function(){
+        code ={
+            code:editor.getValue(),
+            input:input.value,
+            lang:option.value
+        }
+        var oData = await fetch("http://localhost:8000/compile",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(code)
+        })
+        var d = await oData.json()
+        
+        output.value = d.output
+    })
+    </script>
+    <script>
+    var editor2 = CodeMirror.fromTextArea(document.getElementById("editor2"),{
+        mode:"text/x-c++src",
+        theme: "dracula",
+        lineNumbers:true,
+        autoCloseBrackets: true,
+        matchBrackets: true
+    })
+    var width2=window.innerWidth
+    var input2 = document.getElementById("input2")
+    var output2 = document.getElementById("output2")
+    var run2 = document.getElementById("run2")
+    editor2.setSize(0.4*innerWidth,"500")
+    // document.getElementById("loader").style.display = "block";
+    var option2 = document.getElementById("inlineFormSelectPref2")
+    option2.addEventListener("change",function(){
+    
+        if(option2.value=="Java"){
+            editor2.setOption("mode","text/x-java")
+        }
+        else if(option2.value=="Python"){
+            editor2.setOption("mode","text/x-python")
+        }
+        else{
+            editor2.setOption("mode","text/x-c++src")
+        }
+    })
+    var code2;
+    run2.addEventListener("click",async function(){
+        code2 ={
+            code:editor2.getValue(),
+            input:input2.value,
+            lang:option2.value
+        }
+        
+        var oData2 = await fetch("http://localhost:8000/compile",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(code2)
+        })
+        var d2 = await oData2.json()
+        
+        output2.value = d2.output
+    })
+    </script>
+    <script>
+    // var editor = document.getElementById("editor")
+    // var editor2 = document.getElementById("editor2")
+       
+    // var option2 = document.getElementById("inlineFormSelectPref2");
+    // var output2 = document.getElementById("output2")
+    var generatecode=document.getElementById("generatecode");
+    var code3;
+    generatecode.addEventListener("click",async function(){
+        code3={
+            code:editor.getValue(),
+            lang:option2.value
+        }
+        // document.getElementById("loader").style.display = "block";
+        var oData3 = await fetch("http://localhost:8000/convert",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(code3)
+        })
+        var d3 = await oData3.json()
+        
+        editor2.setValue(d3.output)
+    })
+
+    </script>
+    <script>
+        var commentcode = document.getElementById("commentcode")
+        var code4;
+        // document.getElementById("loader").style.display = "block";
+        commentcode.addEventListener("click",async function(){
+        code4={
+            code:editor.getValue(),
+        }
+        var oData4 = await fetch("http://localhost:8000/comment",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(code4)
+        })
+        var d4 = await oData4.json()
+        
+        
+        editor2.setValue(d4.output)
+    })
+    </script>
+    
+</body>
+</html>
