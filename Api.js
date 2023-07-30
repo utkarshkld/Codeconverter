@@ -5,12 +5,12 @@ const compiler=require("compilex")
 const options = {stats : true}
 compiler.init(options)
 app.use(bodyP.json())
-app.use("/codemirror-5.65.13",express.static("C:/Users/utkar/OneDrive/Desktop/compiler 2 major/codemirror-5.65.13"))
+app.use("/codemirror-5.65.13",express.static("codemirror-5.65.13"))
 app.get("/",function(req,res){
     compiler.flush(function(){
         console.log("deleted")
     })
-    res.sendFile("C:/Users/utkar/OneDrive/Desktop/compiler 2 major/index3.html")
+    res.sendFile("index3.html")
 })
 app.post("/compile",function(req,res){
         var code = req.body.code
@@ -113,7 +113,7 @@ app.post("/convert",function(req,res){
     const prompt2 = `Re-write the code in ${lang} : ${code} and it should be executable. pls dont write any unexecutable lines Please take care of indentetion and brackets of respective langugae, return the generated code after checking and fixing the error`
     // console.log(prompt2)
     const configuration = new Configuration({
-        apiKey: "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",
+        apiKey: "Your Api Key",
     });
     const openai = new OpenAIApi(configuration);
     async function runCompletion() {
@@ -138,7 +138,7 @@ app.post("/comment",function(req,res){
     const prompt2 = `Add small comments between some places in the code and return it in executabel form: ${code}`
     
     const configuration = new Configuration({
-        apiKey: "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",
+        apiKey: "Your Key",
     });
     const openai = new OpenAIApi(configuration);
     async function runCompletion() {
